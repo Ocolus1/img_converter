@@ -28,12 +28,21 @@ services:
       - "traefik.http.routers.convert-secure.rule=Host(`convert.africandao.com`)"
       - "traefik.http.routers.convert-secure.service=convert-service"
       - "traefik.http.services.convert-service.loadbalancer.server.port=5000"
+<<<<<<< HEAD
   
   static:
     # nginx config
     image: nginx
     volumes:
       - ./files:/usr/share/nginx/html:ro
+=======
+
+  static:
+    # nginx config
+    image: nginx
+    # volumes:
+    #   - ./files:/usr/share/nginx/html:ro
+>>>>>>> 4814b74e796b12c53f0e9b70b1502129e0bb1a55
     container_name: static-files
     restart: unless-stopped
     networks:
@@ -83,4 +92,7 @@ services:
 networks:
   proxy-track:
     external: true
+<<<<<<< HEAD
   traefik:
+=======
+>>>>>>> 4814b74e796b12c53f0e9b70b1502129e0bb1a55
