@@ -83,3 +83,4 @@ services:
 networks:
   proxy-track:
     external: true
+  traefik:
