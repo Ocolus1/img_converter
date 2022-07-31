@@ -36,8 +36,6 @@ services:
     #   - ./files:/usr/share/nginx/html:ro
     container_name: static-files
     restart: unless-stopped
-    networks:
-      - traefik
     labels:
       # Match on the hostname and the path
       - traefik.http.routers.static-files.rule=(Host(`convert.africandao.com`) && Path(`/static`))
@@ -83,4 +81,3 @@ services:
 networks:
   proxy-track:
     external: true
-  traefik:
