@@ -47,10 +47,6 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   libpq-dev \
   # Translations dependencies
   gettext \
-<<<<<<< HEAD
-=======
-
->>>>>>> 4814b74e796b12c53f0e9b70b1502129e0bb1a55
   libgdiplus \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
