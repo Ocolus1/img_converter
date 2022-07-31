@@ -3,7 +3,6 @@ version: '3'
 volumes:
   production_postgres_data: {}
   production_postgres_data_backups: {}
-  production_traefik: {}
 
 services:
   django: &django
@@ -19,6 +18,38 @@ services:
       - ./.envs/.production/.django
       - ./.envs/.production/.postgres
     command: /start
+    networks:
+      - proxy-track
+      - default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy-track"
+      - "traefik.http.routers.convert-secure.entrypoints=websecure"
+      - "traefik.http.routers.convert-secure.rule=Host(`convert.africandao.com`)"
+      - "traefik.http.routers.convert-secure.service=convert-service"
+      - "traefik.http.services.convert-service.loadbalancer.server.port=5000"
+  
+  static:
+    # nginx config
+    image: nginx
+    volumes:
+      - ./files:/usr/share/nginx/html:ro
+    container_name: static-files
+    restart: unless-stopped
+    networks:
+      - traefik
+    labels:
+      # Match on the hostname and the path
+      - traefik.http.routers.static-files.rule=(Host(`convert.africandao.com`) && Path(`/static`))
+      - traefik.http.routers.static-files.tls=true
+      - traefik.http.routers.static-files.tls.certresolver=le
+      - traefik.http.services.static-files.loadbalancer.server.port=8080
+
+      # Define a new middleware to strip the URL prefix before sending it to static-files
+      - traefik.http.middlewares.static-files-stripprefix.stripprefix.prefixes=/static
+
+      # tell Traefik which middlewares we want to use on this container
+      - traefik.http.routers.static-files.middlewares=gzip@docker,static-files-stripprefix@docker
 
   postgres:
     build:
@@ -30,20 +61,6 @@ services:
       - production_postgres_data_backups:/backups:z
     env_file:
       - ./.envs/.production/.postgres
-
-  traefik:
-    build:
-      context: .
-      dockerfile: ./compose/production/traefik/Dockerfile
-    image: img_converter_production_traefik
-    depends_on:
-      - django
-    volumes:
-      - production_traefik:/etc/traefik/acme:z
-    ports:
-      - "0.0.0.0:80:80"
-      - "0.0.0.0:443:443"
-      - "0.0.0.0:5555:5555"
 
   redis:
     image: redis:6
@@ -62,3 +79,8 @@ services:
     <<: *django
     image: img_converter_production_flower
     command: /start-flower
+
+networks:
+  proxy-track:
+    external: true
+  traefik:
