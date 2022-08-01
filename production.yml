@@ -27,7 +27,7 @@ services:
       - "traefik.http.routers.convert-secure.entrypoints=websecure"
       - "traefik.http.routers.convert-secure.rule=Host(`convert.africandao.com`)"
       - "traefik.http.routers.convert-secure.service=convert-service"
-      - "traefik.http.services.convert-service.loadbalancer.server.port=8000"
+      # - "traefik.http.services.convert-service.loadbalancer.server.port=8000"
       # - "traefik.http.middlewares.convert-csrf.addprefix.prefix=/convert"
       # - "traefik.http.middlewares.secureHeaders.headers.hostsProxyHeaders=[`X-CSRFToken`]"
       # - "traefik.http.routers.convert-secure.middlewares=convert-csrf@docker"
