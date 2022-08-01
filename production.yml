@@ -19,11 +19,11 @@ services:
       - ./.envs/.production/.postgres
     command: /start
     networks:
-      - proxy-track
+      - proxy
       - default
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=proxy-track"
+      - "traefik.docker.network=proxy"
       - "traefik.http.routers.convert-secure.entrypoints=websecure"
       - "traefik.http.routers.convert-secure.rule=Host(`convert.africandao.com`)"
       - "traefik.http.routers.convert-secure.service=convert-service"
@@ -83,16 +83,16 @@ services:
     image: img_converter_production_flower
     command: /start-flower
     networks:
-      - proxy-track
+      - proxy
       - default
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=proxy-track"
+      - "traefik.docker.network=proxy"
       - "traefik.http.routers.convert_flower-secure.entrypoints=flower"
       - "traefik.http.routers.convert_flower-secure.rule=Host(`convert.africandao.com`)"
       - "traefik.http.routers.convert_flower-secure.service=convert_flower-service"
       - "traefik.http.services.convert_flower-service.loadbalancer.server.port=5555"
 
 networks:
-  proxy-track:
+  proxy:
     external: true
