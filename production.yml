@@ -84,6 +84,7 @@ services:
     command: /start-flower
     networks:
       - proxy-track
+      - default
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy-track"
