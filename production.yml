@@ -27,11 +27,7 @@ services:
       - "traefik.http.routers.convert-secure.entrypoints=websecure"
       - "traefik.http.routers.convert-secure.rule=Host(`convert.africandao.com`)"
       - "traefik.http.routers.convert-secure.service=convert-service"
-      - "traefik.http.routers.convert-secure.tls.certresolver=letsencrypt"
       - "traefik.http.services.convert-service.loadbalancer.server.port=5000"
-      # - "traefik.http.middlewares.convert-csrf.addprefix.prefix=/convert"
-      # - "traefik.http.middlewares.secureHeaders.headers.hostsProxyHeaders=[`X-CSRFToken`]"
-      # - "traefik.http.routers.convert-secure.middlewares=convert-csrf@docker"
 
   # static:
   #   # nginx config
@@ -69,30 +65,51 @@ services:
   redis:
     image: redis:6
 
-  # celeryworker:
-  #   <<: *django
-  #   image: img_converter_production_celeryworker
-  #   command: /start-celeryworker
+  celeryworker:
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+    image: img_converter_production_celeryworker
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.postgres
+    networks:
+      - default
+    command: /start-celeryworker
 
-  # celerybeat:
-  #   <<: *django
-  #   image: img_converter_production_celerybeat
-  #   command: /start-celerybeat
+
+  celerybeat:
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+    image: img_converter_production_celerybeat
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.postgres
+    networks:
+      - default
+    command: /start-celerybeat
 
   flower:
-    <<: *django
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
     image: img_converter_production_flower
-    command: /start-flower
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.postgres
     networks:
-      - proxy
       - default
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=proxy"
-      - "traefik.http.routers.convert_flower-secure.entrypoints=flower"
-      - "traefik.http.routers.convert_flower-secure.rule=Host(`convert.africandao.com`)"
-      - "traefik.http.routers.convert_flower-secure.service=convert_flower-service"
-      - "traefik.http.services.convert_flower-service.loadbalancer.server.port=5555"
+    command: /start-flower
 
 networks:
   proxy:
