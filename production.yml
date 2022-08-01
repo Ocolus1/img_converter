@@ -27,6 +27,7 @@ services:
       - "traefik.http.routers.convert-secure.entrypoints=websecure"
       - "traefik.http.routers.convert-secure.rule=Host(`convert.africandao.com`)"
       - "traefik.http.routers.convert-secure.service=convert-service"
+      - "traefik.http.routers.convert-secure.tls.certresolver=letsencrypt"
       - "traefik.http.services.convert-service.loadbalancer.server.port=5000"
       # - "traefik.http.middlewares.convert-csrf.addprefix.prefix=/convert"
       # - "traefik.http.middlewares.secureHeaders.headers.hostsProxyHeaders=[`X-CSRFToken`]"
@@ -68,15 +69,15 @@ services:
   redis:
     image: redis:6
 
-  celeryworker:
-    <<: *django
-    image: img_converter_production_celeryworker
-    command: /start-celeryworker
+  # celeryworker:
+  #   <<: *django
+  #   image: img_converter_production_celeryworker
+  #   command: /start-celeryworker
 
-  celerybeat:
-    <<: *django
-    image: img_converter_production_celerybeat
-    command: /start-celerybeat
+  # celerybeat:
+  #   <<: *django
+  #   image: img_converter_production_celerybeat
+  #   command: /start-celerybeat
 
   flower:
     <<: *django
