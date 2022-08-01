@@ -25,7 +25,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
       - "traefik.http.routers.convert-secure.entrypoints=websecure"
-      - "traefik.http.routers.convert-secure.rule=Host(`convert.africandao.com`)"
+      - "traefik.http.routers.convert-secure.rule=Host(`convertdfile.com`)"
       - "traefik.http.routers.convert-secure.service=convert-service"
       - "traefik.http.services.convert-service.loadbalancer.server.port=5000"
 
