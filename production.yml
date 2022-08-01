@@ -27,7 +27,7 @@ services:
       - "traefik.http.routers.convert-secure.entrypoints=websecure"
       - "traefik.http.routers.convert-secure.rule=Host(`convert.africandao.com`)"
       - "traefik.http.routers.convert-secure.service=convert-service"
-      - "traefik.http.services.convert-service.loadbalancer.server.port=5000"
+      # - "traefik.http.services.convert-service.loadbalancer.server.port=5000"
 
   # static:
   #   # nginx config
