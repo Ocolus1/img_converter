@@ -29,8 +29,8 @@ services:
       - "traefik.http.routers.convert-secure.service=convert-service"
       - "traefik.http.services.convert-service.loadbalancer.server.port=5000"
       # - "traefik.http.middlewares.convert-csrf.addprefix.prefix=/convert"
-      - "traefik.http.middlewares.convert-csrf.headers.hostsProxyHeaders=[`X-CSRFToken`]"
-      - "traefik.http.routers.convert-secure.middlewares=convert-csrf@docker"
+      - "traefik.http.middlewares.secureHeaders@file.headers.hostsProxyHeaders=[`X-CSRFToken`]"
+      # - "traefik.http.routers.convert-secure.middlewares=convert-csrf@docker"
 
   # static:
   #   # nginx config
