@@ -18,6 +18,8 @@ services:
       - ./.envs/.production/.django
       - ./.envs/.production/.postgres
     command: /start
+    expose:
+      - 8000
     networks:
       - proxy-track
       - default
@@ -27,7 +29,7 @@ services:
       - "traefik.http.routers.convert-secure.entrypoints=websecure"
       - "traefik.http.routers.convert-secure.rule=Host(`convert.africandao.com`)"
       - "traefik.http.routers.convert-secure.service=convert-service"
-      # - "traefik.http.services.convert-service.loadbalancer.server.port=5000"
+      - "traefik.http.services.convert-service.loadbalancer.server.port=8000"
 
   # static:
   #   # nginx config
@@ -38,9 +40,11 @@ services:
   #   restart: unless-stopped
   #   labels:
   #     # Match on the hostname and the path
+  #     - traefik.enable=true
   #     - traefik.http.routers.static-files.rule=(Host(`convert.africandao.com`) && Path(`/static`))
   #     - traefik.http.routers.static-files.tls=true
-  #     - traefik.http.routers.static-files.tls.certresolver=le
+  #     - traefik.http.routers.static-files.entrypoints=websecure
+  #     - traefik.http.routers.static-files.tls.certresolver=letsencrypt
   #     - traefik.http.services.static-files.loadbalancer.server.port=80
 
   #     # Define a new middleware to strip the URL prefix before sending it to static-files
