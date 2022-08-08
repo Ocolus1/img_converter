@@ -9,7 +9,7 @@ celery==5.2.7  # pyup: < 6.0  # https://github.com/celery/celery
 django-celery-beat==2.3.0  # https://github.com/celery/django-celery-beat
 flower==1.1.0  # https://github.com/mher/flower
 social-auth-app-django==5.0.0 #https://pypi.org/project/social-auth-app-django/
-aspose-words==22.4.0
+aspose-words==22.8.0
 
 # Django
 # ------------------------------------------------------------------------------
