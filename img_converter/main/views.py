@@ -107,3 +107,4 @@ def terms_cond(request):
 def cookie_policy(request):
     context = {}
     return render(request, "main/cookie_policy.html", context)
+

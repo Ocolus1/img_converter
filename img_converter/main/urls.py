@@ -2,6 +2,7 @@ from django.urls import path
 
 from .views import download_file, index, login_user, logout_user, register, privacy_policy, terms_cond, cookie_policy
 
+
 app_name = "main"
 urlpatterns = [
     path("", index, name="index"),
