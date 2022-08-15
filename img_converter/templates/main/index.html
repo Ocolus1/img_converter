@@ -169,15 +169,28 @@
             $(el).css("color", "rgb(96, 0, 0)");
           } else {
             $(el).css("color", "#006042");
-            $("._to").css("color", "#006042");
-            $("._to").text("____");
-            $(".img_format_p").text(
+            if ($(el).text() == $("._to").text()) {
+              $("._to").css("color", "#006042");
+              $("._to").text("____");
+              $(".img_format_p").text(
               "Select the file format you want to convert to"
             );
+            }else {
+              // reset everything to return to the
+              // selecting from the beginning
+              $("._from").css("color", "#006042");
+              $("._from").text("____");
+              $("._to").css("color", "#006042");
+              $("._to").text("____");
+              $(".img_t").removeClass("active_f");
+              $(".img_t").css("color", "#006042");
+              $(".img_format_p").text("Select the file format you have");
+            }
+
           }
         } else if (count == 2) {
           alert("Selection completed");
-        } else if (count == 1) {
+        } else if (count == 1) { // the type format has been clicked the second time this will run
           $(el).toggleClass("active_f");
           if ($(el).hasClass("active_f")) {
             $(el).css("color", "rgb(96, 0, 0)");
@@ -193,7 +206,7 @@
             $("._from").text("____");
             $(".img_format_p").text("Select the file format you have");
           }
-        } else if (count == 0) {
+        } else if (count == 0) { // If the type format is  clicked once
           $(el).toggleClass("active_f");
           if ($(el).hasClass("active_f")) {
             $(el).css("color", "rgb(96, 0, 0)");
