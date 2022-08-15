@@ -223,12 +223,18 @@
   };
 
   const close_div = (id) => {
+    // This function removes an image from the image collection
     let im = document.querySelector(`#_${id}`);
     if (im.parentNode) {
       im.parentNode.removeChild(im);
     }
     file = Array.from(file);
     file.splice(id, 1);
+    if (file.length == 0) {
+      dropAreaCon.style.display = "block";
+      showOuterDiv.style.display = "none";
+      download.style.display = "none";
+    }
   };
 
   input.addEventListener("change", function () {
