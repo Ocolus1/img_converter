@@ -73,7 +73,9 @@
             Select File
           </button>
           <p class="drag_p">
-            Or you could just drop the files here. 5MB max per file. If you want
+            Or you could just drop the files here.
+            {% if not request.user.is_authenticated %}
+            5MB max per file. If you want
             more just
             <a
               href="#"
@@ -83,6 +85,7 @@
               >sign up</a
             >
             and we'll increase your limit.
+            {% else %} {% endif %}
           </p>
           <input type="file" name="myfile" multiple hidden />
         </div>
