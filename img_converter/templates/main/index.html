@@ -22,6 +22,18 @@
           ></button>
         </div>
       </div>
+      <div class="position-fixed top-0 end-0 p-3 " style="z-index: 11; margin-top: 5rem; margin-right: 2rem;">
+        <div class="toast align-items-center bg-danger text-white "
+        id="liveToast2"
+        role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body">
+            <strong>Type Selection completed!</strong>
+           </div>
+            <button type="button" class="btn-close me-2 m-auto text-body" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="col-md-8 col-sm-12 mx-auto moveable">
       <div class="img_format">
@@ -192,7 +204,11 @@
 
           }
         } else if (count == 2) {
-          alert("Selection completed");
+          // alert("Selection completed");
+          var toastLiveExample2 = document.getElementById("liveToast2");
+          var toast2 = new bootstrap.Toast(toastLiveExample2);
+          toast2.show();
+          console.log(toast2)
         } else if (count == 1) { // the type format has been clicked the second time this will run
           $(el).toggleClass("active_f");
           if ($(el).hasClass("active_f")) {
