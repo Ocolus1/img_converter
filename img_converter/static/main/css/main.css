@@ -20,6 +20,7 @@ html, body {
     font-family: 'Futura Bk BT';
     overflow-x: hidden;
     height: 100%;
+    font-size: 1.125rem;
 }
 
 .logo_img {
