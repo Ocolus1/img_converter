@@ -394,14 +394,16 @@
       }
     }
 
-    const getfile = () => {
+    const getfile = async () => {
       convert.style.display = "none";
       spin.style.display = "block";
-      sendData();
+      await sendData();
       setTimeout(() => {
-        download.style.display = "none";
+        spin.style.display = "none"; // setting the spinner to none
+        convert.style.display = "block"; // setting the convert button to block
+        download.style.display = "none"; // setting the download div to none
         d_text.style.display = "block";
-      }, 2500);
+      }, 1000);
     };
 
     const sendData = async () => {
