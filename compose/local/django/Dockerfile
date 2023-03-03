@@ -76,6 +76,9 @@ COPY ./compose/local/django/celery/flower/start /start-flower
 RUN sed -i 's/\r$//g' /start-flower
 RUN chmod +x /start-flower
 
+# copyt the logging config file
+COPY logging.conf ${APP_HOME}/logging.conf
+
 
 # copy application code to WORKDIR
 COPY . ${APP_HOME}

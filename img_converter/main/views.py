@@ -77,7 +77,8 @@ def login_user(request):
 
         if user is not None:
             login(request, user)
-            return redirect("main:index")
+            return redirect(request.GET.get('next', 'index'))
+            # return redirect("main:index")
         else:
             messages.info(request, "Invalid email or Password")
             data = {"message": "Invalid email or Password"}

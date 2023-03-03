@@ -4,6 +4,7 @@ Base settings to build other settings files upon.
 from pathlib import Path
 
 import environ
+import sys
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # img_converter/
@@ -79,6 +80,7 @@ LOCAL_APPS = [
     # "img_converter.users",
     # Your stuff: custom apps go here
     "img_converter.main",
+    "img_converter.removebg",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -239,35 +241,52 @@ MANAGERS = ADMINS
 # See https://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
 LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s "
-            "%(process)d %(thread)d %(message)s"
-        }
-    },
-    "handlers": {
-        "file": {
-            "level": "DEBUG",
-            "class": "logging.FileHandler",
-            "filename": "logs/log_file_1.log",
-            "formatter": "verbose",
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
         },
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'django.log',
+            'maxBytes': 1024*1024*5,  # 5MB
+            'backupCount': 5,
+            'formatter': 'verbose',
         },
     },
-    "loggers": {
-        "django": {
-            "handers": ["file", "console"],
-            "level": "DEBUG",
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
         },
     },
-    "root": {"level": "INFO", "handlers": ["console"]},
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+        'img_converter': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+        'img_converter.removebg': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+        'img_converter.main': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+    },
+    'root': {
+        'handlers': ['console', 'file'],
+        'level': 'INFO',
+    }
 }
+
 
 # Celery
 # ------------------------------------------------------------------------------

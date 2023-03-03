@@ -17,6 +17,7 @@ urlpatterns = [
     # path("users/", include("img_converter.users.urls", namespace="users")),
     # path("accounts/", include("allauth.urls")),
     path("", include("img_converter.main.urls", namespace="main")),
+    path("remove-bg/", include("img_converter.removebg.urls", namespace="remove-bg")),
     path("", include("social_django.urls", namespace="social"))
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

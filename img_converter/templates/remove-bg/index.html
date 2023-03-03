@@ -1,0 +1,305 @@
+{% extends '../base.html' %}{% load static %}
+{% block title %}Remove Background Image - Fessburn Enterprise{% endblock title %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'main/css/main.css' %}" />
+<div class="container mb-5 pb-5">
+  <div class="row">
+    <div class="col-md-8 col-sm-12 mx-auto moveable">
+      <div class="card border-0 my-md-5 my-2">
+        <div class="card-body">
+          <div class="row mb-2 mb-md-4">
+            <div class="col-xs-12 ">
+              <blockquote class="blockquote mb-1">
+                <h1 class="display-3 fw-bolder rem_header">Remove Image Background</h1>
+                <p>100% Automatically and Free.</p>
+              </blockquote>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div
+              class="col-xs-12 d-flex justify-content-center align-items-center"
+            >
+              <div class="card border-0">
+                <h5 class="card-title text-center fw-bold mb-2">BEFORE</h5>
+                <img
+                  src="{% static 'remove-bg/img/52.jpg' %}"
+                  class="img-fluid"
+                  alt="..."
+                />
+              </div>
+              <div class="card border-0">
+                <h5 class="card-title text-center fw-bold mb-2">AFTER</h5>
+                <img
+                  src="{% static 'remove-bg/img/new_52.jpg' %}"
+                  class="img-fluid"
+                  alt="..."
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container drag-area-con mb-4 shadow p-4 bg-body rounded">
+        {% csrf_token %}
+        <div class="drag-area">
+          <button class="btn drop_btn">
+            <i class="fas fa-file-upload"></i>
+            Select File
+          </button>
+          <p class="drag_p">
+            Or you could just drop the files here.
+            {% if not request.user.is_authenticated %}
+            5MB max per file. If you want more
+            just
+            <a
+              href="#"
+              data-bs-toggle="modal"
+              data-bs-target="#staticBackdrop"
+              style="color: #006042; font-weight: 700"
+              >sign up</a
+            >
+            and we'll increase your limit. {% else %} {% endif %}
+          </p>
+          <input type="file" name="myfile" hidden />
+        </div>
+      </div>
+      <div class="container bt_cn">
+        <div class="full_img">
+          <div class="container">
+            <div class="row full_img_row"></div>
+          </div>
+        </div>
+      </div>
+      <div class="text-center">
+        <button class="btn mb-3 text-center download">
+          <div class="spinner-border loo text-success mx-auto" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <span class="convert">Remove Background</span>
+        </button>
+        <p class="d_text mb-5 pb-5">
+          Your file has been converted.
+          <a href="" class="d_link">Click here to download now</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+  // var csrftoken = getCookie("csrftoken");
+  const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+  //selecting all required elements
+  const dropArea = document.querySelector(".drag-area"),
+    button = dropArea.querySelector(".drop_btn"),
+    input = dropArea.querySelector("input"),
+    showArea = document.querySelector(".full_img_row"),
+    format_type = document.querySelectorAll(".img_t");
+  const download = document.querySelector(".download");
+  const dropAreaCon = document.querySelector(".drag-area-con");
+  const showOuterDiv = document.querySelector(".bt_cn");
+  const convert = document.querySelector(".convert");
+  const spin = document.querySelector(".loo");
+  const d_text = document.querySelector(".d_text");
+  const d_link = document.querySelector(".d_link");
+  download.style.display = "none";
+  // dropAreaCon.style.display = "none";
+  showOuterDiv.style.display = "none";
+  var file; //this is a global variable and we'll use it inside multiple functions
+  // const _to = document.querySelector("._to").innerHTML;
+  // const _from = document.querySelector("._from").innerHTML;
+  let count = 0;
+  let image_type = "";
+  d_text.style.display = "none";
+  spin.style.display = "none";
+
+  button.onclick = () => {
+    input.click(); //if user click on the button then the input also clicked
+  };
+
+  const close_div = (id) => {
+    // This function removes an image from the image collection
+    let im = document.querySelector(`#_${id}`);
+    if (im.parentNode) {
+      im.parentNode.removeChild(im);
+    }
+    file = Array.from(file);
+    file.splice(id, 1);
+    if (file.length == 0) {
+      dropAreaCon.style.display = "block";
+      showOuterDiv.style.display = "none";
+      download.style.display = "none";
+      d_text.style.display = "none";
+      file.length = 0; // reset the file array
+    }
+  };
+
+  input.addEventListener("change", function () {
+    //getting user select file and [0] this means if user select multiple files then we'll select only the first one
+    file = this.files;
+    dropArea.classList.add("active");
+    showFile(); //calling function
+  });
+
+  //If user Drag File Over DropArea
+  dropArea.addEventListener("dragover", (event) => {
+    event.preventDefault(); //preventing from default behavior
+    dropArea.classList.add("active");
+  });
+
+  //If user leave dragged File from DropArea
+  dropArea.addEventListener("dragleave", () => {
+    dropArea.classList.remove("active");
+  });
+
+  //If user drop File on DropArea
+  dropArea.addEventListener("drop", (event) => {
+    event.preventDefault(); //preventing from default behavior
+    //getting user select file and [0] this means if user select multiple files then we'll select only the first one
+    file = event.dataTransfer.files;
+    showFile(); //calling function
+  });
+
+  function showFile() {
+    for (let im = 0; im <= file.length; im++) {
+      let fileType = file[im].type; //getting selected file type
+      image_type = fileType;
+      let validExtensions = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/tiff",
+        "image/tif",
+        "image/bmp",
+        "image/eps",
+        "image/gif",
+      ]; //adding some valid image extensions in array
+      if (validExtensions.includes(fileType)) {
+        //if user selected file is an image file
+        let fileReader = new FileReader(); //creating new FileReader object
+        fileReader.onload = () => {
+          var fileURL = fileReader.result; //passing user file source in fileURL variable
+          // UNCOMMENT THIS BELOW LINE. I GOT AN ERROR WHILE UPLOADING THIS POST SO I COMMENTED IT
+          // let imgTag = `<img src="${fileURL}" alt="image">`; //creating an img tag and passing user selected file source inside src attribute
+
+          function creatediv() {
+            let i = document.createElement("i");
+            i.className = "fas fa-file-image col-1 col-sm-2";
+            // i.setAttribute("onclick", `close_div(${im})`) // setting attribute to close the div
+
+            let sp = document.createElement("span");
+            sp.className = " col-6 ";
+            sp.innerHTML = `${file[im].name}`;
+
+            let sp2 = document.createElement("span");
+            sp2.className = " col-3 ";
+            sp2.innerHTML = `${Math.round(file[im].size / 1024)}KB`;
+
+            // let img = document.createElement('img');
+            // img.className = "images";
+            // img.setAttribute("src", fileURL)
+            // img.setAttribute("alt", "image")
+
+            let btn = document.createElement("button");
+            btn.className = "btn-close float-end close_btn col-1";
+            btn.setAttribute("type", "button");
+            btn.setAttribute("onclick", `close_div(${im})`);
+
+            let div3 = document.createElement("div");
+            div3.className = "card-body row";
+
+            let div2 = document.createElement("div");
+            div2.className = "card border-0 p-0";
+
+            let div1 = document.createElement("div");
+            div1.className = "col-12 my-2 shadow p-sm-3 bg-body rounded";
+            div1.setAttribute("id", `_${im}`);
+
+            div3.appendChild(i);
+            div3.appendChild(sp);
+            div3.appendChild(sp2);
+            div3.appendChild(btn);
+            div2.appendChild(div3);
+            div1.appendChild(div2);
+
+            return div1;
+          }
+          showArea.appendChild(creatediv()); //adding that created img tag inside dropArea container
+        };
+        fileReader.readAsDataURL(file[im]);
+        dropAreaCon.style.display = "none";
+        showOuterDiv.style.display = "block";
+        download.style.display = "inline";
+      } else {
+        alert("This is not an Image File!");
+        dropArea.classList.remove("active");
+      }
+    }
+  }
+
+  d_link.addEventListener("click", () => {
+    var toastLiveExample = document.getElementById("liveToast");
+    var toast = new bootstrap.Toast(toastLiveExample);
+    toast.show();
+  });
+
+  download.addEventListener("click", async (ev) => {
+    ev.preventDefault();
+    const MAX_SIZE = 5 * 1024 * 1024;
+    let check = true;
+    for (var im of file) {
+      const check_test = im.size < MAX_SIZE;
+      const auth_user = "{{user.is_authenticated}}" == "True";
+      if (check_test == false && auth_user == false) {
+        $("#staticBackdrop2").modal("show");
+        check = false;
+        break;
+      }
+    }
+
+    const getfile = async () => {
+      convert.style.display = "none";
+      spin.style.display = "block";
+      await sendData();
+      setTimeout(() => {
+        spin.style.display = "none"; // setting the spinner to none
+        convert.style.display = "block"; // setting the convert button to block
+        download.style.display = "none"; // setting the download div to none
+        d_text.style.display = "block";
+      }, 1000);
+    };
+
+    const sendData = async () => {
+      var formData = new FormData();
+      formData.append("image_type", image_type);
+      for (i = 0; i < file.length; i++) {
+        formData.append("image", file[i]);
+      }
+      // formData.append("image", file);
+      const result = await fetch("{% url 'remove-bg:remove-bg-index' %}", {
+        headers: {
+          "X-CSRFToken": csrftoken,
+        },
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          let file = json.file;
+          let filename = json.filename;
+          d_link.setAttribute("href", `download/${file}/${filename}`);
+          // window.location.href = `download/${file}/${filename}`;
+        })
+        .catch((error) => console.log(error));
+    };
+
+    const auth_user = "{{user.is_authenticated}}" == "True";
+    if (check == false && auth_user == true) {
+      getfile();
+    } else if (check == true && auth_user == false) {
+      getfile();
+    } else if (check == true && auth_user == true) {
+      getfile();
+    }
+  });
+</script>
+{% endblock content %}
